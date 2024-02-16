@@ -1,0 +1,6 @@
+@Ninpou_HostAddress = http://localhost:5022
+
+GET {{Ninpou_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
