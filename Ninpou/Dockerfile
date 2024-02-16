@@ -12,7 +12,7 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0-nanoserver-1809 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Ninpou/Ninpou.csproj", "Ninpou/"]
-RUN dotnet restore "./Ninpou/./Ninpou.csproj"
+RUN dotnet restore "./Ninpou/Ninpou.csproj"
 COPY . .
 WORKDIR "/src/Ninpou"
 RUN dotnet build "./Ninpou.csproj" -c %BUILD_CONFIGURATION% -o /app/build
