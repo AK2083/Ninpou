@@ -29,5 +29,5 @@ jobs:
         context: .
         file: ./Ninpou/Dockerfile
         push: true
-        tags: ghcr.io/${{ github.repository_owner }}/ninpou:latest
+        tags: ghcr.io/ak2083/ninpou:latest
       
