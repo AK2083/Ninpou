@@ -81,7 +81,7 @@ jobs:
     - name: echoes
       run: |
         echo ${{ steps.meta.outputs.tags }}
-        echo ${{ needs.create_release.outputs.newTag }}
+        echo ${{ toJson(needs) }}
         echo ${{ steps.meta.outputs.labels }}
 
     - name: Log in to GitHub Container Registry
