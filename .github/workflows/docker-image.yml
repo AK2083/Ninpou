@@ -78,12 +78,6 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
 
-    - name: echoes
-      run: |
-        echo ${{ steps.meta.outputs.tags }}
-        echo ${{ toJson(needs) }}
-        echo ${{ steps.meta.outputs.labels }}
-
     - name: Log in to GitHub Container Registry
       uses: docker/login-action@v3
       with:
