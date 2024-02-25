@@ -82,7 +82,8 @@ jobs:
 
     - name: echoes
       run: |
-        echo steps.meta.outputs.tags
+        echo ${{ steps.meta.outputs.tags }}
+        echo ak2083/ninpou:${{ steps.tag_version.outputs.new_tag }}
           
     - name: Build and push Docker image
       uses: docker/build-push-action@v5
@@ -90,5 +91,5 @@ jobs:
         context: .
         file: ./Ninpou/Dockerfile
         push: true
-        tags: ak2083/ninpou:${{ steps.meta.outputs.tags }}, ak2083/ninpou:latest
+        tags: ${{ steps.meta.outputs.tags }}, ak2083/ninpou:latest
       
