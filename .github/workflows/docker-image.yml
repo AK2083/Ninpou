@@ -81,7 +81,6 @@ jobs:
     - name: echoes
       run: |
         echo ${{ steps.meta.outputs.tags }}
-        echo ${{ needs }}
         echo ${{ needs.create_release.outputs.newTag }}
         echo ${{ steps.meta.outputs.labels }}
 
