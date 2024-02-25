@@ -10,6 +10,56 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
+  create_release:
+    permissions: 
+      contents: write
+    runs-on: ubuntu-latest
+    outputs:
+      newTag: ${{ steps.tag_version.outputs.new_tag }}
+  
+    steps:
+    - uses: actions/checkout@v4
+  
+    - name: Bump version and push tag
+      id: tag_version
+      uses: mathieudutour/github-tag-action@v6.1
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        tag_prefix: ""
+  
+    - name: Create a GitHub release
+      uses: ncipollo/release-action@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        tag: ${{ steps.tag_version.outputs.new_tag }}
+        name: Release ${{ steps.tag_version.outputs.new_tag }}
+        body: ${{ steps.tag_version.outputs.changelog }}
+  
+    - name: Set output
+      id: settingNewTagOutput
+      run: |
+        echo "newTag='${{ steps.tag_version.outputs.new_tag }}'" >> $GITHUB_OUTPUT
+
+  changelog:
+    needs: create_release
+    permissions: 
+      actions: write
+      contents: write
+    runs-on: ubuntu-latest   
+        
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate Changelog
+        id: changelog
+        uses: TriPSs/conventional-changelog-action@v5
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          skip-version-file: 'true'
+          git-branch: 'master'
+          git-push: 'true'
+          output-file: 'CHANGELOG.md'
+          
   build:
     permissions: write-all
     runs-on: ubuntu-latest
@@ -23,12 +73,22 @@ jobs:
         registry: ghcr.io
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
-        
+
+    - name: Docker meta
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ghcr.io/ak2083/ninpou
+
+    - name: echoes
+      run: |
+        echo steps.meta.outputs.tags
+          
     - name: Build and push Docker image
       uses: docker/build-push-action@v5
       with:
         context: .
         file: ./Ninpou/Dockerfile
         push: true
-        tags: ghcr.io/ak2083/ninpou:latest
+        tags: ak2083/ninpou:${{ steps.meta.outputs.tags }}, ak2083/ninpou:latest
       
